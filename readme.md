@@ -87,3 +87,38 @@ Para acceder al servidor: http://localhost:8000/
 Creamos el path para la url hello-world que genere una vista (una función) al ser requerida.
 ```path ('url',funcion)```
 
+## 4. Request
+
+Django procesa las requests o peticiones siguiendo el siguiente esquema:
+
+1. Recive una petición http desde el cliente.
+2. Busca la ruta del archivo de URLs en la variable ROOT_URLCONF del archivo settings.py.
+3. Busca la variable urlpatterns en el archivo de URLs.
+4. Busca dentro de urlpatterns la URL que coincida con la solicitada.
+5. Ejecuta la vista/función que corresponda a la URL pasandole los siguientes argumentos:
+* Instancia de un objeto HttpRequest
+* Argumentos que contiene la propia URL (opcional)
+* Argumentos adicionales que podamos incluir
+6. Si no encuentra ninguna URL, lanza una excepcion.
+
+## views.py
+Creamos un archivo views.py que alojará las vistas/funciones.
+
+
+## 5. Response
+
+### httpResponse
+```
+from django.http import HttpResponse
+
+def httpresponse(request):
+    return HttpResponse('value')
+  ```
+  
+### JsonResponse
+```
+from django.http import JsonResponse
+
+def jsonresponse(request):
+    return JsonResponse({'key':value})
+  ```
