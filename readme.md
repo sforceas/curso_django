@@ -82,3 +82,8 @@ Se abre la interfaz similar a django-admin pero con mas opciones.
 Iniciamos el servidor con ```python3 manage.py runserver```
 
 Para acceder al servidor: http://localhost:8000/
+
+### Hola mundo
+Creamos el path para la url hello-world que genere una vista (una función) al ser requerida.
+```path ('url',funcion)```
+
