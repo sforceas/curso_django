@@ -192,3 +192,34 @@ También se pueden incluir lógicas de programación en los templates con la not
 {%endfor%}
 ```
 Para este proyecto se usa Bootstrap como hoja de estilos (ver feed.html)
+
+## 8. Patrones de diseño y Django
+Un patrón de diseño, en términos generales, es una solución reutilizable a un problema común.
+El patrón más común para el desarrollo web es MVC (Model, View, Controller). Django implementa un patrón similar llamado MTV (Model, Template, View).
+
+### Model
+Es la forma en la que creamos esquemas de objetos (un usuario, un post, etc) para representarlos en nuestra base de datos.
+El modelo sin importar nuestro sistema ge BD (mysql, postgress, etc) nos ayudara a crear esta entidad a través de un OMR, esto nos ahorra la molestia de tener que escribir las sentencias de SQL para crear las tablas y atributos.
+
+El Modelo en Django usa diferentes opciones para conectarse a múltiples bases de datos relacionales, entre las que se encuentran: SQLite, PostgreSQL, Oracle y MySQL. 
+Para la creación de tablas, Django usa la técnica del ORM (Object Relational Mapper), una abstracción del manejo de datos usando OOP.
+
+https://docs.djangoproject.com/en/2.0/ref/settings/#databases
+https://docs.djangoproject.com/en/2.0/ref/models/fields/
+
+La configuración de las bases de datos se realiza en el scritp "settings.py", en la variable DATABASES. Por defecto, django crea una base dedatos de SQLITE que solo necesita de un archivo que contiene todas las tablas.
+
+Al añadir apps de Django, tenemos una advertencia en la consola que nos indica que migremos los cambios a la base de datos. Esto permite actualizar las tablas con el comando ```python3 manage.py migrate``` de forma automatica.
+
+Si creamos un nuevo modelos, los podemos refleja estos cambios mediante ```python3 platzigram/manage.py makemigrations``` y, luego, reflejar esos cambios medinte ```python3 manage.py migrate```.
+
+Estas nuevas tablas van a reflejarse en la base de datos identificandose como: app_modelo, por ejemplo: posts_users.
+
+
+### Template
+Es el encargado de manejar la lógica y sintaxis de la información que se va a presentar en el cliente, el sistema de templates de django usa HTML para ello.
+
+### View
+Su función es solo suministrar datos al template
+ 
+Manda la información necesaria el template para que este pueda manejar los datos y presentarlos de una manera correcta.

@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'platzigram.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
+        'ENGINE': 'django.db.backends.sqlite3', #ver documentacion para otras bbdd
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
