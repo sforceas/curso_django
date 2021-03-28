@@ -101,6 +101,30 @@ Django procesa las requests o peticiones siguiendo el siguiente esquema:
 * Argumentos adicionales que podamos incluir
 6. Si no encuentra ninguna URL, lanza una excepcion.
 
+## Argumentos a través de la URL
+
+Los path converters permiten incluir variables en las URL que Django se encarga de procesar como argumentos de las vistas. Estos se describen enla variable 'urlpatterns' del script 'urls.py' con el siguiente formato:
+
+```
+urlpatterns = [
+  path('hi/<str:name>/<int:age>',views.check_age)
+]
+```
+Esta vista se procesa en el script 'views.py' donde se ejecuta la fución que recibe los argumentos de la url:
+```
+def check_age(request,name,age):
+
+    if age < 18:
+        message = 'Lo sentimos, tienes que ser mayor de edad para usar este servicio.'
+    else:
+        message = 'Bienvenido a nuestro servicio'
+    return HttpResponse(f'Hola, {name}. Tu edad es de {age} años. {message}')
+```
+
+Por ejemplo, con la url 'http://localhost:8000/hi/sergio/17' la respuesta sería:
+'Hola, sergio. Tu edad es de 17 años. Lo sentimos, tienes que ser mayor de edad para usar este servicio.'
+
+
 ## views.py
 Creamos un archivo views.py que alojará las vistas/funciones.
 
@@ -119,6 +143,52 @@ def httpresponse(request):
 ```
 from django.http import JsonResponse
 
+dictionary = {
+  'key':value
+}
+
 def jsonresponse(request):
-    return JsonResponse({'key':value})
+    return JsonResponse(dicctionary)
   ```
+
+
+
+## 6.Apps
+
+Para crear una aplicación de Django, usamos el comando 'createapp' de manage.py dandole como atributo el nombre de la app.
+```python3 manage.py createapp nombredelaapp```
+Se crean automaticamente un conjunto de scripts para la app:
+* migrations
+* admin.py
+* models.py
+* tests.py
+* views.py
+
+## 7. Template
+Los templates son los scripts que se encargan de presentar los datos de la lógica en un archivo html de una forma más eficiente. Las rutas a las templates se encuentran en la variable TEMPLATES de settings.py. Si la llave APP_DIR = True, permite que django encuentre automaticamente los archivos html que estén dentro de los directorios "templates" de las diferentes apps, de modo que no es necesario indicar la ruta al hacer el render.
+
+Para crear un nuevo template, creamos una carpeta dentro de la carpeta de la app correspondiente con el nombre "templates", en la que iremos generando los diferentes archivos html correspondientes.
+
+Para mostrar la pagina html en el navegador se usa la función render de django.shorcuts. Esta se genera normalmente en el return de la vista con los argumentos de la request, el nombre del archivo html y el contexto (que es un diccionario que agrupa las variables resultantes de la lógica y que tengan que mostrarse).
+```
+from django.shorcuts import render
+
+def show_page(request):
+  
+  context={
+    'key':value
+    }
+  
+  return render(request,'page.html',context)
+```
+Dentro del template, en HTML, las variables del contexto se muestran con la siguiente notación: 
+```
+{{ key }}
+```
+También se pueden incluir lógicas de programación en los templates con la notación (ver documentacion de Template System - Build In de Django):
+```
+{%for post in posts%}
+  {{post}}
+{%endfor%}
+```
+Para este proyecto se usa Bootstrap como hoja de estilos (ver feed.html)

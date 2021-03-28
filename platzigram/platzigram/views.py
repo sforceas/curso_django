@@ -25,3 +25,11 @@ def numbers(request):
 
     #return HttpResponse(f'Hi there! Your ascending list is: {numbers}') 
     return JsonResponse({ "numbers" : numbers}) #Reto: ordenar los numeros y devolver en formato json
+
+def check_age(request,name,age):
+
+    if age < 18:
+        message = 'Lo sentimos, tienes que ser mayor de edad para usar este servicio.'
+    else:
+        message = 'Bienvenido a nuestro servicio'
+    return HttpResponse(f'Hola, {name}. Tu edad es de {age} años. {message}')
