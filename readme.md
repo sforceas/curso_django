@@ -223,3 +223,146 @@ Es el encargado de manejar la lógica y sintaxis de la información que se va a 
 Su función es solo suministrar datos al template
  
 Manda la información necesaria el template para que este pueda manejar los datos y presentarlos de una manera correcta.
+
+
+## 9. ORM de Django
+
+ORM: Object-relational mapping. Es el encargado de permitir
+el acceso y control de una base de datos relacional a través de
+una abstracción a clases y objetos.
+
+## Escribir datos en BDD
+Para comprender el ORM de django, inciciamos un shell de python desde Django. Para ello, ejecutamos la función "shell" en manage.py con el comando:  ```python3 manage.py shell```. Se abrirá un shell de python desde el que podemos ejecutar diferentes comandos. En este caso cargaremos datos en la base de datos, concretamente en la tabla post_user que hemos definido en la clase User en posts/models.py.
+
+Para ello, primero importamos la clase User desde el módulo posts.models. También importamos 'date' para dar formato de fecha a un string. 
+```
+from datetime import date
+from posts.models import User
+```
+Posteriormente, cargamos una lista de usuarios con los datos completados. Cada usuario se estructura como un diccionario, en el que la llave corresponde con un campo del modelo y de la BDD. En este ejemplo se incluye un ejemplo de elemento:
+
+```
+users = [
+  {
+        'email': 'arturo@mail.com',
+        'first_name': 'Arturo',
+        'last_name': 'Martínez',
+        'password': '123456',
+        'is_admin': True,
+        'birthdate': date(1981, 11, 6),
+        'bio': "Bografia de mi vida!"
+    }
+]
+```
+Finalmente realizamos la operacion de escritura en la base de datos mediante un loop for que recorre cada diccionario incluido en la lista de usuarios, crea una instancia/objeto de esa clase con los datos del diccionario (**user) y los guarda con .save(). Finalmente imprime el mail y el id para comprobar que se ha escrito correctamente.
+```
+for user in users:
+  obj = User(**user)
+  obj.save()
+  print(obj.pk, ':', obj.email)
+```
+
+## Lectura en la BDD
+Para traer un unico objeto de una base de datos usamos el método class.objects.get(key = 'value') Para ello tenemos que haber importado la clase User de models.py. El resultado de la query es una instancia de la clase User (por lo tanto es un objeto), de modo que podemos acceder a los datos de este objeto mediante la sintaxis objeto.llave
+```
+from posts.models import User
+
+user = User.objects.get(email='freddier@platzi.com'
+print(user.email)
+```
+Si queremos realizar un filtro de datos usaremos el método class.objects.filter(key='value'). En este caso haremos una query especial usando dos guiones bajos para filtrar según como terminan los emails.
+```
+from posts.models import User
+
+platzi_users = User.objects.filter(email__endswith='@platzi.com'
+print(platzi_users.email)
+```
+
+Si quisieramos traer todos los objetos usariamos class.objects.all()
+```
+all_users = User.objects.all()
+```
+
+
+### Modificando la representacion de las querys
+Por defecto cuando hacemos una lectura de la base de datos nos devuelve el id del objeto. Si queremos que nos devuelva por defecto otro valor identificativo, como el mail, crearemos una función dentro de la clase correspondiente en models.py.
+
+```
+def __str__(self):
+  # Return email
+  return self.email
+```
+### Actualizando la BDD
+Si queremos aplicar un filtro y actualizar los valores de los objetos que cumplen este filtro, usamos Class.objects.filter(value1='value1').update(value2='value2'). En este ejemplo queremos que los que tengan mail @platzi.com sean todos is_admin=True. Este método update devuelve un numero entero que cuenta el número de objetos actualizados.
+```
+update_users = User.objects.filter(email__endswith='@platzi.com').update(is_admin=True)
+```
+
+Making queries | Django documentation | Django
+https://docs.djangoproject.com/en/2.0/topics/db/queries/
+
+
+## 10. Aplicacion Django Auth
+Las opciones que Django propone para implementar Usuarios personalizados son:
+- Usando el Modelo proxy
+- Extendiendo la clase abstracta de Usuario existente
+
+Para el presente proyecto debemos crear los campos de usuario:
+
+website
+biography
+phone_number
+profile picture
+created
+modified
+Luego debemos crear la app que se llamará users
+```
+python3 manage.py startapp users
+```
+Crear el modelo
+Se debe importar lo que necesitamos
+```
+from django.contrib.auth.models import User
+```
+Luego se crea los campos adicionales que se necesitan según el proyecto
+```
+class Profle (models.Model):
+    """Profile Model."""
+    """Proxy model that extends the base data with other information"""
+    user =models.OneToOneField(User,on_delete=models.CASCADE)
+    website=models.URLField(max_length=200,blank=True)
+    biography=models.TextField(blank=True)
+    phone_number=models.CharField(max_length=20,blank=True)
+    picture=models.ImageField(
+        upload_to='users/pictures',
+        blank=True,
+        null=True
+    )
+    create=models.DateTimeField(auto_now_add=True)
+    modified=models.DateTimeField(auto_now=True)
+
+
+    def __str__(self):
+        """Return username."""
+        return self.user.username
+```
+Posterior a eso dirigirse al archivo de settings.py y así como se instaló post se va a instalar users
+
+Para que funcione el campo ImageField se debe instalar la librería Pillow y se lo hace de la siguiente manera
+```
+pip install Pillow
+```
+Después ejecutar para que se hagan efecto las migraciones
+```
+python3 manage.py makemigrations
+python3 manage.py migrate
+```
+Y para ingresar al administrador de django crear el super usuario
+```
+python3 manage.py createsuperuser
+```
+Para acceder al panel de administración de Django, por defecto se accede mediante localhost:8000/admin y iniciando sesión con un superuser.
+
+Registraremos el perfil que acabamos de customizar, junto con el modelo extendido de Usuario, en el users.admin.py de Django para poder manejarlo desde la aplicación.
+Esto puede hacerse de dos formas: con admin.site.register(Profile) o creando una nueva clase que herede de Admin.ModelAdmin.
+https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
