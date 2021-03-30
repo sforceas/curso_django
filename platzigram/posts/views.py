@@ -44,4 +44,4 @@ def list_posts(request):
         'posts':posts
     }
 
-    return render(request,'feed.html',context)
+    return render(request,'posts/feed.html',context)

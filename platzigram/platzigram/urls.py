@@ -19,10 +19,19 @@ from platzigram import views as local_views
 from posts import views as posts_views
 
 
+"""
+Librerias para poder visualizar imagenes o media desde el panel de administracion.
+"""
+from django.conf import settings
+from django.conf.urls.static import static
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('hello-world',local_views.hello_world), # Al acceder a la url se ejecuta una función
     path('numbers',local_views.numbers),
     path('hi/<str:name>/<int:age>',local_views.check_age),
     path('posts/',posts_views.list_posts)
-]
+
+    
+] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) # Configurado en settings.py
