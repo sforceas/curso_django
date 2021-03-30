@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from platzigram import views as local_views
 from posts import views as posts_views
+from users import views as users_views
 
 
 """
@@ -27,11 +28,13 @@ from django.conf.urls.static import static
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('hello-world',local_views.hello_world), # Al acceder a la url se ejecuta una función
-    path('numbers',local_views.numbers),
-    path('hi/<str:name>/<int:age>',local_views.check_age),
-    path('posts/',posts_views.list_posts)
-
+    path('admin/', admin.site.urls, name = 'admin'),
+    path('hello-world',local_views.hello_world, name = 'hello_world'), # Al acceder a la url se ejecuta una función
+    path('numbers',local_views.numbers, name = 'sort_numbers'),
+    path('hi/<str:name>/<int:age>',local_views.check_age,name='check_age'),
     
-] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) # Configurado en settings.py
+    path('posts/',posts_views.list_posts,name='feed'),
+
+    path('users/login/',users_views.login_view,name='login')
+    
+] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) # Configurado en settings.py para mostrar media durante desarrollo
