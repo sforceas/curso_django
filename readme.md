@@ -366,3 +366,151 @@ Para acceder al panel de administración de Django, por defecto se accede median
 Registraremos el perfil que acabamos de customizar, junto con el modelo extendido de Usuario, en el users.admin.py de Django para poder manejarlo desde la aplicación.
 Esto puede hacerse de dos formas: con admin.site.register(Profile) o creando una nueva clase que herede de Admin.ModelAdmin.
 https://docs.djangoproject.com/en/2.2/ref/contrib/admin/
+
+
+## 11. Templates y static
+html y css
+
+## 12. Login y Logout de Django
+Ver documentacion
+https://docs.djangoproject.com/en/2.0/topics/auth/default/#how-to-log-a-user-out
+
+
+
+### Logout
+En el archivo views.py de la app users introducimos la siguiente función:
+```
+@login_required
+def logout_view(request):
+  logout(request)
+  # Redirect to a success page
+  return redirect('feed')  
+```
+Para poder hacer logout necesitamos que previamente hayamos hecho login, por eso el decorador @login_required.
+
+Para hacer llamar esta función deberemos registrar la el path en el archivo urls.py.     
+```
+path('users/logout/',users_views.logout_view,name='logout')
+```
+Para incluir un botón de navegación con la función logout, añadimos el siguiente codigo en la barra de navegación nav.html. El formato {%url "nombre_del_path"%} usa los atributos name que se le dan a los paths en el archivo urls.py.
+
+```
+<a href="{% url "logout"%}">
+  <i class="fas fa-sign-out-alt"></i>
+</a>
+```
+
+### Creacion de usuarios (Sign Up)
+https://docs.djangoproject.com/en/2.0/topics/auth/default/#creating-users
+En este caso queremos crear un usuario a partir de nuestro modelso Profile, que extiende el de User (de django.contrib.auth).
+
+En el archivo views.py de la app users introducimos la siguiente función:
+```
+def signup_view(request):
+    '''Signup view'''
+
+    if request.method == 'POST':
+        email = request.POST['email']
+        username = request.POST['username']
+        password = request.POST.get('password', True)
+        password_confirm = request.POST.get('password_confirm', True)
+
+        
+        # PASSWORD VALIDATION
+        if password != password_confirm:
+            error = 'The passwords do not match.'
+            return render(request, 'users/signup.html', {'error': error})
+        
+        # EMAIL VALIDATION
+        u = User.objects.filter(email=email)
+        if u:
+            error = f'There is another account using {email}'
+            return render(request, 'users/signup.html', {'error': error})
+        
+        # USERNAME VALIDATION 
+        try:
+            user = User.objects.create_user(username=username, password=password)
+            user.email = email
+            user.save()
+
+            profile = Profile(user=user)
+            profile.save()
+
+            login(request, user)
+            return redirect('feed') # CAMBIAR >> Redireccionar a completar perfil
+        except IntegrityError as ie:
+            error = f'There is another account using {usermame}'
+            return render(request, 'users/signup.html', {'error': error})
+
+    return render(request, 'users/signup.html')
+```
+
+Para hacer llamar esta función deberemos registrar la el path en el archivo urls.py.     
+```
+path('users/signup/',users_views.signup_view,name='signup')
+```
+Para incluir un botón de navegación con la función logout, añadimos el siguiente codigo en la barra de navegación nav.html. El formato {%url "nombre_del_path"%} usa los atributos name que se le dan a los paths en el archivo urls.py.
+
+```
+{% extends "users/base.html" %}
+
+{% block head_content %}
+<title>Platzigram sign up</title>
+{% endblock %}
+
+{% block container %}
+
+    {% if error %}
+        <p class="alert alert-danger">{{ error }}</p>
+    {% endif %}
+
+    <form action="{% url 'signup' %}" method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <input class="form-control" type="text" placeholder="Username" name="username" required="true" />
+        </div>
+
+        <div class="form-group">
+            <input class="form-control" type="password" placeholder="Password" name="password" required="true" />
+        </div>
+
+        <div class="form-group">
+            <input class="form-control" type="password" placeholder="Password confirmation" name="password_confirm" required="true" />
+        </div>
+
+        <div class="form-group">
+            <input class="form-control" type="text" placeholder="Firs namet" name="first_name" required="true" />
+        </div>
+
+        <div class="form-group">
+            <input class="form-control" type="text" placeholder="Last name" name="last_name" required="true" />
+        </div>
+
+        <div class="form-group">
+            <input class="form-control" type="email" placeholder="eMail address" name="email" required="true" />
+        </div>
+
+        <button class="btn btn-primary btn-block mt-5" type="submit">Register!</button>
+
+    </form>
+{% endblock %}
+```
+
+
+
+
+## 13. Middlewares
+Un middleware en Django es una serie de hooks y una API de bajo nivel que nos permiten modificar el objeto request antes de que llegue a la vista y response antes de que salga de la vista.
+
+Django dispone de los siguientes middlewares por defecto:
+
+SecurityMiddleware
+SessionMiddleware
+CommonMiddleware
+CsrfViewMiddleware
+AuthenticationMiddleware
+MessageMiddleware
+XFrameOptionsMiddleware
+
+Crearemos un middleware para redireccionar al usuario al perfil para que actualice su información cuando no haya definido aún biografía o avatar.
