@@ -44,3 +44,6 @@ html, body {
     background: #fff;
 }
 
+.object-fit_cover {
+    object-fit: cover;
+  }

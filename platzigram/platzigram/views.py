@@ -8,8 +8,6 @@ from django.http import HttpResponse, JsonResponse
 #Utilidades
 from datetime import datetime
 
-
-
 def hello_world(request):
     now = datetime.now().strftime('%b %dth, %Y - %H:%M hrs') #Aplicamos formato al datetime 
     return HttpResponse('Hi! The current server time is {now}'.format(now=str(now))) # Al ejecutar la función se responde con mensaje http
