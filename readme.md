@@ -452,49 +452,9 @@ path('users/signup/',users_views.signup_view,name='signup')
 Para incluir un botón de navegación con la función logout, añadimos el siguiente codigo en la barra de navegación nav.html. El formato {%url "nombre_del_path"%} usa los atributos name que se le dan a los paths en el archivo urls.py.
 
 ```
-{% extends "users/base.html" %}
-
-{% block head_content %}
-<title>Platzigram sign up</title>
-{% endblock %}
-
-{% block container %}
-
-    {% if error %}
-        <p class="alert alert-danger">{{ error }}</p>
-    {% endif %}
-
-    <form action="{% url 'signup' %}" method="POST">
-        {% csrf_token %}
-
-        <div class="form-group">
-            <input class="form-control" type="text" placeholder="Username" name="username" required="true" />
-        </div>
-
-        <div class="form-group">
-            <input class="form-control" type="password" placeholder="Password" name="password" required="true" />
-        </div>
-
-        <div class="form-group">
-            <input class="form-control" type="password" placeholder="Password confirmation" name="password_confirm" required="true" />
-        </div>
-
-        <div class="form-group">
-            <input class="form-control" type="text" placeholder="Firs namet" name="first_name" required="true" />
-        </div>
-
-        <div class="form-group">
-            <input class="form-control" type="text" placeholder="Last name" name="last_name" required="true" />
-        </div>
-
-        <div class="form-group">
-            <input class="form-control" type="email" placeholder="eMail address" name="email" required="true" />
-        </div>
-
-        <button class="btn btn-primary btn-block mt-5" type="submit">Register!</button>
-
-    </form>
-{% endblock %}
+<a href="{% url "signup"%}">
+  <i class="fas fa-sign-out-alt"></i>
+</a>
 ```
 
 
@@ -514,3 +474,11 @@ MessageMiddleware
 XFrameOptionsMiddleware
 
 Crearemos un middleware para redireccionar al usuario al perfil para que actualice su información cuando no haya definido aún biografía o avatar.
+
+![](https://cdn-images-1.medium.com/max/800/1*t9TAX89Y3rZUXth2Le07Xg.png)
+
+Pasos a seguir:
+1. Crear un path en urls.py llamado update_profile
+2. Crear una función update_profile en users.models
+3. Crear un render html de la pagina de update
+4. Asignar el middleware en settings.py
