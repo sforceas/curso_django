@@ -463,15 +463,17 @@ Para incluir un botón de navegación con la función logout, añadimos el sigui
 ## 13. Middlewares
 Un middleware en Django es una serie de hooks y una API de bajo nivel que nos permiten modificar el objeto request antes de que llegue a la vista y response antes de que salga de la vista.
 
+https://docs.djangoproject.com/en/2.0/topics/http/middleware/
+
 Django dispone de los siguientes middlewares por defecto:
 
-SecurityMiddleware
-SessionMiddleware
-CommonMiddleware
-CsrfViewMiddleware
-AuthenticationMiddleware
-MessageMiddleware
-XFrameOptionsMiddleware
+* SecurityMiddleware
+* SessionMiddleware
+* CommonMiddleware
+* CsrfViewMiddleware
+* AuthenticationMiddleware (nos permite acceder a datos del usuario directamente desde cualquier template mediante {{request.user.username}}, por ejemplo).
+* MessageMiddleware
+* XFrameOptionsMiddleware
 
 Crearemos un middleware para redireccionar al usuario al perfil para que actualice su información cuando no haya definido aún biografía o avatar.
 
@@ -479,6 +481,37 @@ Crearemos un middleware para redireccionar al usuario al perfil para que actuali
 
 Pasos a seguir:
 1. Crear un path en urls.py llamado update_profile
-2. Crear una función update_profile en users.models
-3. Crear un render html de la pagina de update
-4. Asignar el middleware en settings.py
+```
+path('users/me/profile/',users_views.update_profile,name='update_profile')
+
+```
+3. Crear una función update_profile en users.models
+4. Crear un render html de la pagina de update
+5. Crear un archivo middleware.py en la app principal. En él crearemos una clase para el middleware que incluya una función __ call __ que es la que ejecutará el la logica.
+7. Asignar el middleware en settings.py
+```
+MIDDLEWARE = [
+...
+'platzigram.middleware.ProfileCompletionMiddleware',
+]
+```
+
+
+## 14. Formularios
+La clase utilitaria para formularios de Django nos ayuda a resolver mucho del trabajo que se realiza de forma repetitiva. La forma de implementarla es muy similar a la implementación de la clase models.model.
+
+Algunas de las clases disponibles en Django al implementar form, son:
+
+* BooleanField
+* CharField
+* ChoiceField
+* TypedChoiceField
+* DateField
+* DateTimeField
+* DecimalField
+* EmailField
+* FileField
+* ImageField
+
+https://docs.djangoproject.com/en/2.0/topics/forms/
+https://docs.djangoproject.com/en/2.0/ref/forms/fields/
