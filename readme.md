@@ -482,3 +482,5 @@ Pasos a seguir:
 2. Crear una función update_profile en users.models
 3. Crear un render html de la pagina de update
 4. Asignar el middleware en settings.py
+
+
