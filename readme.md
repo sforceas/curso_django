@@ -514,3 +514,13 @@ Lo usaremos para crear el formulario de posts.
 
 Aprovecharemos para refinar la funcionalidad en el navbar y conectar el feed con los posts.
 https://docs.djangoproject.com/en/2.0/topics/forms/modelforms/
+
+
+## 15. Class-Based Views
+Las vistas también pueden ser clases, que tienen el objetivo de evitar la repetición de tareas como mostrar los templates, son vistas genéricas que resuelven problemas comunes.
+
+![](https://miro.medium.com/max/1565/1*1NgVsYmmLCiwXUy-uE0VLA.jpeg)
+
+ https://docs.djangoproject.com/en/2.0/topics/class-based-views/
+ http://ccbv.co.uk/
+ 

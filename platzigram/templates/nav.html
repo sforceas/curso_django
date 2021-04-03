@@ -10,7 +10,7 @@
             <ul class="navbar-nav mr-auto">
 
                 <li class="nav-item">
-                    <a href="">
+                    <a href="{% url "update_profile"%}">
                         {% if user.profile.picture %}
                             <img src="{{ user.profile.picture.url }}" class="rounded-circle object-fit_cover" height="50" width="50" />
                         {% else%}

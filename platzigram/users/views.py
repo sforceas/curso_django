@@ -4,12 +4,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from django.db import IntegrityError
-from users.models import Profile
 # Forms
-from users.forms import ProfileForm
-
+from users.forms import ProfileForm, SignupForm
 
 # Create your views here.
 
@@ -29,7 +25,7 @@ def update_profile(request):
             profile.picture = data['picture']
             profile.save()
 
-            return redirect('update_profile')
+            return redirect('feed')
 
     else:
         form = ProfileForm()
@@ -71,41 +67,19 @@ def logout_view(request):
     # Redirect to a success page
     return redirect('login')           
 
-
 def signup_view(request):
     '''Signup view'''
 
     if request.method == 'POST':
-        email = request.POST['email']
-        username = request.POST['username']
-        password = request.POST.get('password', True)
-        password_confirm = request.POST.get('password_confirm', True)
-
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
+    else:
+        form = SignupForm()
+    return render(
+        request=request,
+        template_name='users/signup.html',
+        context={'form':form}
+    )
         
-        # PASSWORD VALIDATION
-        if password != password_confirm:
-            error = 'The passwords do not match.'
-            return render(request, 'users/signup.html', {'error': error})
-        
-        # EMAIL VALIDATION
-        u = User.objects.filter(email=email)
-        if u:
-            error = f'There is another account using {email}'
-            return render(request, 'users/signup.html', {'error': error})
-        
-        # USERNAME VALIDATION 
-        try:
-            user = User.objects.create_user(username=username, password=password)
-            user.email = email
-            user.save()
-
-            profile = Profile(user=user)
-            profile.save()
-
-            login(request, user)
-            return redirect('feed') # CAMBIAR >> Redireccionar a completar perfil
-        except IntegrityError as ie:
-            error = f'There is another account using {usermame}'
-            return render(request, 'users/signup.html', {'error': error})
-
-    return render(request, 'users/signup.html')
