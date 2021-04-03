@@ -481,20 +481,6 @@ Crearemos un middleware para redireccionar al usuario al perfil para que actuali
 
 Pasos a seguir:
 1. Crear un path en urls.py llamado update_profile
-<<<<<<< HEAD
-2. Crear una función update_profile en users.models
-3. Crear un render html de la pagina de update
-4. Asignar el middleware en settings.py
-
-
-=======
-```
-path('users/me/profile/',users_views.update_profile,name='update_profile')
-
-```
-3. Crear una función update_profile en users.models
-4. Crear un render html de la pagina de update
-5. Crear un archivo middleware.py en la app principal. En él crearemos una clase para el middleware que incluya una función __ call __ que es la que ejecutará el la logica.
 7. Asignar el middleware en settings.py
 ```
 MIDDLEWARE = [
@@ -522,4 +508,9 @@ Algunas de las clases disponibles en Django al implementar form, son:
 
 https://docs.djangoproject.com/en/2.0/topics/forms/
 https://docs.djangoproject.com/en/2.0/ref/forms/fields/
->>>>>>> b7a6fcd3ca519cd87a94be44e4d2cc039e993879
+
+ModelForm es una manera más sencilla de crear formularios en Django y en el caso de nuestro proyecto, se adapta mucho mejor al modelo que ya tenemos.
+Lo usaremos para crear el formulario de posts.
+
+Aprovecharemos para refinar la funcionalidad en el navbar y conectar el feed con los posts.
+https://docs.djangoproject.com/en/2.0/topics/forms/modelforms/
