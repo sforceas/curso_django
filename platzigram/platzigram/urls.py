@@ -14,11 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from platzigram import views as local_views
-from posts import views as posts_views
-from users import views as users_views
-
+from django.urls import path, include
 
 """
 Librerias para poder visualizar imagenes o media desde el panel de administracion.
@@ -26,19 +22,12 @@ Librerias para poder visualizar imagenes o media desde el panel de administracio
 from django.conf import settings
 from django.conf.urls.static import static
 
-
 urlpatterns = [
-    path('admin/', admin.site.urls, name = 'admin'),
-    path('hello-world',local_views.hello_world, name = 'hello_world'), # Al acceder a la url se ejecuta una función
-    path('numbers',local_views.numbers, name = 'sort_numbers'),
-    path('hi/<str:name>/<int:age>',local_views.check_age,name='check_age'),
     
-    path('',posts_views.list_posts,name='feed'),
-    path('posts/new',posts_views.create_post, name='create_post'),
+    path('admin/', admin.site.urls, name = 'admin'),
 
-    path('users/login/',users_views.login_view,name='login'),
-    path('users/logout/',users_views.logout_view,name='logout'),
-    path('users/signup/',users_views.signup_view,name='signup'),
-    path('users/me/profile/',users_views.update_profile,name='update_profile'),
+    path('',include(('posts.urls','posts'),namespace='posts')),
+    path('users/',include(('users.urls','users'),namespace='users')),
+    
     
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT) # Configurado en settings.py para mostrar media durante desarrollo
